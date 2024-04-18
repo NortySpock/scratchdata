@@ -1,8 +1,14 @@
-FROM golang:1.21.1 as builder
+FROM golang:1.22.1 as builder
 WORKDIR /build
+# avoiding doing "COPY . ."
+# as that could bake the "data" folder into the image if the operator uses the default config
+VOLUME ["/data"]
+VOLUME ["/config.yaml"]
 COPY go.mod go.sum ./
+COPY models ./
+COPY pkg ./
 RUN go mod download
-COPY ./ ./
-RUN go build scratchdata
-EXPOSE 3000
-ENTRYPOINT ["./scratchdata", "local.toml"]
+RUN go build -o /scratchdata
+RUN chmod +x /scratchdata
+EXPOSE 8080
+ENTRYPOINT ["/scratchdata", "config.yaml"]
