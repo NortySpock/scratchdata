@@ -20,11 +20,6 @@ services:
           target: /data
 
 
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Chicago
-
     logging:
       driver: "json-file"
       options:
